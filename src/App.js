@@ -5,6 +5,16 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { listNotes } from './graphql/queries';
 import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
 
+import NavBar from './NavBar'
+
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import { Paper } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import AdvertiserForm from './AdvertiserForm';
+
+
 const initialFormState = { name: '', description: '' }
 
 function App() {
@@ -24,7 +34,7 @@ function App() {
     if (!formData.name || !formData.description) return;
     await API.graphql({ query: createNoteMutation, variables: { input: formData } });
     const Http = new XMLHttpRequest();
-    const url = 'https://hooks.slack.com/services/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';
+    const url = 'https://cors-anywhere.herokuapp.com/https://hooks.slack.com/services/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';
     Http.open("POST", url, true);
     Http.setRequestHeader('Content-Type', 'application/json');
     Http.send("Some message");
@@ -38,32 +48,31 @@ function App() {
     setNotes(newNotesArray);
     await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
   }
-
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      '& > *': {
+        margin: theme.spacing(1),
+        width: theme.spacing(100),
+      },
+    },
+  }));
   return (
     <div className="App">
-      <h1>My Notes App</h1>
-      <input
-        onChange={e => setFormData({ ...formData, 'name': e.target.value})}
-        placeholder="Note name"
-        value={formData.name}
-      />
-      <input
-        onChange={e => setFormData({ ...formData, 'description': e.target.value})}
-        placeholder="Note description"
-        value={formData.description}
-      />
-      <button onClick={createNote}>Create Note</button>
-      <div style={{marginBottom: 30}}>
-        {
-          notes.map(note => (
-            <div key={note.id || note.name}>
-              <h2>{note.name}</h2>
-              <p>{note.description}</p>
-              <button onClick={() => deleteNote(note)}>Delete note</button>
-            </div>
-          ))
-        }
+      <NavBar/>
+      <div className={useStyles().root} style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+        
+        <Paper elevation = {3} marginBottom = {10}>
+          <AdvertiserForm/>
+        </Paper>
+        
       </div>
+
       <AmplifySignOut />
     </div>
   );
