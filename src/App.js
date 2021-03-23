@@ -67,7 +67,7 @@ function App() {
           alignItems: "center"
         }}>
         
-        <Paper elevation = {3} marginBottom = {10}>
+        <Paper elevation = {3} style={{padding:20}}>
           <AdvertiserForm/>
         </Paper>
         
